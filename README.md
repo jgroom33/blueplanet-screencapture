@@ -11,5 +11,6 @@ go install github.com/jgroom33/blueplanet-screencapture
 
 ## Options
 
--element=(querySelector type of query for an element to wait for)
--file=filename.png
+-element - https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector
+
+-file - filename to save
