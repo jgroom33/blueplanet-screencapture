@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"math"
 	"os"
 	"strings"
 	"time"
@@ -32,13 +31,11 @@ func main() {
 	pathPtr := flag.String("path", "http://localhost:9980/", "url")
 	elementPtr := flag.String("element", ".main-body", "class to wait for and then capture")
 	filePtr := flag.String("file", "screenshot.png", "save as filename")
-	typePtr := flag.String("type", "element", "element or full")
 	flag.Parse()
 
 	// ignore unsigned certs
 	opts := append(chromedp.DefaultExecAllocatorOptions[:],
 		chromedp.Flag("ignore-certificate-errors", "1"),
-		chromedp.WindowSize(1800, 990),
 	)
 
 	// create context
@@ -48,46 +45,12 @@ func main() {
 	defer cancel()
 	var buf []byte
 
-	if *typePtr == `element` {
-		// capture screenshot of an element
-		if err := chromedp.Run(ctx, RunWithTimeOut(&ctx, 30, elementScreenshot(*pathPtr, *elementPtr, &buf))); err != nil {
-			log.Fatal(err)
-		}
-		if err := ioutil.WriteFile(*filePtr, buf, 0644); err != nil {
-			log.Fatal(err)
-		}
+	// capture entire browser viewport, returning png with quality=90
+	if err := chromedp.Run(ctx, RunWithTimeOut(&ctx, 30, fullScreenshot(*pathPtr, *elementPtr, 90, &buf))); err != nil {
+		log.Fatal(err)
 	}
-	if *typePtr == "full" {
-		// capture entire browser viewport, returning png with quality=90
-		if err := chromedp.Run(ctx, RunWithTimeOut(&ctx, 30, fullScreenshot(*pathPtr, *elementPtr, 90, &buf))); err != nil {
-			log.Fatal(err)
-		}
-		if err := ioutil.WriteFile(*filePtr, buf, 0644); err != nil {
-			log.Fatal(err)
-		}
-	}
-}
-
-// elementScreenshot takes a screenshot of a specific element.
-func elementScreenshot(urlstr string, sel string, res *[]byte) chromedp.Tasks {
-	if strings.Contains(urlstr, "https") {
-		return chromedp.Tasks{
-			chromedp.Navigate(urlstr),
-			chromedp.WaitVisible(`input[type='text']`, chromedp.ByQuery),
-			chromedp.SendKeys(`input[type='text']`, "admin", chromedp.ByQuery),
-			chromedp.WaitVisible(`input[type='password']`, chromedp.ByQuery),
-			chromedp.SendKeys(`input[type='password']`, "adminpw\t\t\n", chromedp.ByQuery),
-			chromedp.WaitVisible(sel, chromedp.ByQuery),
-			chromedp.Sleep(2 * time.Second),
-			chromedp.Screenshot(sel, res, chromedp.NodeVisible, chromedp.ByQuery),
-		}
-	} else {
-		return chromedp.Tasks{
-			chromedp.Navigate(urlstr),
-			chromedp.WaitVisible(sel, chromedp.ByQuery),
-			chromedp.Sleep(2 * time.Second),
-			chromedp.Screenshot(sel, res, chromedp.NodeVisible, chromedp.ByQuery),
-		}
+	if err := ioutil.WriteFile(*filePtr, buf, 0644); err != nil {
+		log.Fatal(err)
 	}
 }
 
@@ -113,8 +76,7 @@ func fullScreenshot(urlstr string, sel string, quality int64, res *[]byte) chrom
 				if err != nil {
 					return err
 				}
-				// width, height := int64(math.Ceil(contentSize.Width)), int64(math.Ceil(contentSize.Height))
-				width, height := int64(1800), int64(990)
+				width, height := int64(1880), int64(900)
 
 				// force viewport emulation
 				err = emulation.SetDeviceMetricsOverride(width, height, 1, false).
@@ -133,8 +95,8 @@ func fullScreenshot(urlstr string, sel string, quality int64, res *[]byte) chrom
 					WithClip(&page.Viewport{
 						X:      contentSize.X,
 						Y:      contentSize.Y,
-						Width:  contentSize.Width,
-						Height: contentSize.Height,
+						Width:  1880,
+						Height: 900,
 						Scale:  1,
 					}).Do(ctx)
 				if err != nil {
@@ -154,7 +116,7 @@ func fullScreenshot(urlstr string, sel string, quality int64, res *[]byte) chrom
 				if err != nil {
 					return err
 				}
-				width, height := int64(math.Ceil(contentSize.Width)), int64(math.Ceil(contentSize.Height))
+				width, height := int64(1880), int64(900)
 
 				// force viewport emulation
 				err = emulation.SetDeviceMetricsOverride(width, height, 1, false).
@@ -173,8 +135,8 @@ func fullScreenshot(urlstr string, sel string, quality int64, res *[]byte) chrom
 					WithClip(&page.Viewport{
 						X:      contentSize.X,
 						Y:      contentSize.Y,
-						Width:  contentSize.Width,
-						Height: contentSize.Height,
+						Width:  1880,
+						Height: 900,
 						Scale:  1,
 					}).Do(ctx)
 				if err != nil {

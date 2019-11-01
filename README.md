@@ -11,6 +11,5 @@ go install github.com/jgroom33/blueplanet-screencapture
 
 ## Options
 
--element=(querySelector type of query for an element to wait for and then capture)
+-element=(querySelector type of query for an element to wait for)
 -file=filename.png
--type=(full or element)
