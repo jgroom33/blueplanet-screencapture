@@ -76,7 +76,7 @@ func fullScreenshot(urlstr string, sel string, quality int64, res *[]byte) chrom
 				if err != nil {
 					return err
 				}
-				width, height := int64(1880), int64(900)
+				width, height := int64(1280), int64(720)
 
 				// force viewport emulation
 				err = emulation.SetDeviceMetricsOverride(width, height, 1, false).
@@ -95,8 +95,8 @@ func fullScreenshot(urlstr string, sel string, quality int64, res *[]byte) chrom
 					WithClip(&page.Viewport{
 						X:      contentSize.X,
 						Y:      contentSize.Y,
-						Width:  1880,
-						Height: 900,
+						Width:  1280,
+						Height: 720,
 						Scale:  1,
 					}).Do(ctx)
 				if err != nil {
@@ -116,7 +116,7 @@ func fullScreenshot(urlstr string, sel string, quality int64, res *[]byte) chrom
 				if err != nil {
 					return err
 				}
-				width, height := int64(1880), int64(900)
+				width, height := int64(1280), int64(720)
 
 				// force viewport emulation
 				err = emulation.SetDeviceMetricsOverride(width, height, 1, false).
@@ -135,8 +135,8 @@ func fullScreenshot(urlstr string, sel string, quality int64, res *[]byte) chrom
 					WithClip(&page.Viewport{
 						X:      contentSize.X,
 						Y:      contentSize.Y,
-						Width:  1880,
-						Height: 900,
+						Width:  1280,
+						Height: 720,
 						Scale:  1,
 					}).Do(ctx)
 				if err != nil {
