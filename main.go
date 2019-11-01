@@ -113,7 +113,8 @@ func fullScreenshot(urlstr string, sel string, quality int64, res *[]byte) chrom
 				if err != nil {
 					return err
 				}
-				width, height := int64(math.Ceil(contentSize.Width)), int64(math.Ceil(contentSize.Height))
+				// width, height := int64(math.Ceil(contentSize.Width)), int64(math.Ceil(contentSize.Height))
+				width, height := int64(1800), int64(990)
 
 				// force viewport emulation
 				err = emulation.SetDeviceMetricsOverride(width, height, 1, false).
