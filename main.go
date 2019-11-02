@@ -36,6 +36,7 @@ func main() {
 	// ignore unsigned certs
 	opts := append(chromedp.DefaultExecAllocatorOptions[:],
 		chromedp.Flag("ignore-certificate-errors", "1"),
+		chromedp.Flag("headless", true),
 	)
 
 	// create context
